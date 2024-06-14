@@ -1,4 +1,3 @@
-# matrix_interface.pyx
 from libc.stdlib cimport malloc, free
 cimport cython
 
