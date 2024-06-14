@@ -70,6 +70,12 @@ The following matrix operations are implemented:
 
 To see the matrix operations in action, run the `matrix_operations.ipynb` notebook. The notebook demonstrates how to create matrices and perform various operations interactively.
 
+If the notebook doesn't work, you can also run the `main.py` file using the command line:
+
+```sh
+python3 main.py
+```
+
 ### Example Operations in the Notebook
 
 The notebook includes examples of:
@@ -99,3 +105,7 @@ Follow the setup instructions to compile the shared library and the Cython code,
 ## 📜 License
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
+
+## 🐍 Python Version
+
+This project is compatible with Python 3.11.9.
