@@ -2,6 +2,8 @@
 
 This project demonstrates how to perform matrix operations using Cython for improved performance.
 
+![license](https://img.shields.io/github/license/ShaharAshe/Cryptography_modules)
+
 ## 🛠️ Setup
 
 ### Install dependencies
@@ -83,3 +85,8 @@ Follow the setup instructions to compile the shared library and the Cython code,
   - Email: [Davidzay@edu.hac.ac.il](mailto:Davidzay@edu.hac.ac.il)
 - Shahar Asher
   - Email: [Shaharas@edu.hac.ac.il](mailto:Shaharas@edu.hac.ac.il)
+
+
+## 📜 License
+
+This project is licensed under the MIT License - see the `LICENSE` file for details.
