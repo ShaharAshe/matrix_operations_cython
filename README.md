@@ -1,18 +1,85 @@
-# Matrix Operations Library
+# Matrix Operations with Cython 📊
 
-This project provides a C++ library for matrix operations with Python bindings using Pybind11. The library supports various matrix operations, including addition, subtraction, multiplication, transposition, and element-wise multiplication, and uses multithreading for performance optimization.
+This project demonstrates how to perform matrix operations using Cython for improved performance.
 
-## Requirements
+## 🛠️ Setup
 
-- Python 3.6+
-- Pybind11
-- C++14 compatible compiler
+### Install dependencies
 
-## Setup
+1. Update your package list and install essential build tools and Python development headers:
 
-### 1. Install Pybind11
+    ```sh
+    sudo apt-get update
+    sudo apt-get install -y build-essential python3-dev python3-pip
+    ```
 
-You can install Pybind11 using pip:
+2. Install `Cython` and `notebook` via pip:
 
-```bash
-pip install pybind11
+    ```sh
+    pip3 install cython notebook
+    ```
+
+### Compile the shared library
+
+1. Compile the shared library from the C++ and header files:
+
+    ```sh
+    gcc -shared -o libmatrix.so -fPIC matrix.cpp
+    ```
+
+### Compile the Cython extension
+
+1. Run the setup script to build the Cython extension:
+
+    ```sh
+    python3 setup.py build_ext --inplace
+    ```
+
+### Run Jupyter Notebook
+
+1. Start Jupyter Notebook to run the example notebook:
+
+    ```sh
+    jupyter notebook matrix_operations.ipynb
+    ```
+
+## 📐 Matrix Operations
+
+The following matrix operations are implemented:
+
+- Matrix multiplication
+- Matrix addition
+- Matrix subtraction
+- Scalar multiplication
+- Element-wise multiplication
+- Matrix transposition
+
+## Usage
+
+To see the matrix operations in action, run the `matrix_operations.ipynb` notebook. The notebook demonstrates how to create matrices and perform various operations interactively.
+
+### Example Operations in the Notebook
+
+The notebook includes examples of:
+
+- Creating large matrices for heavy tasking.
+- Filling matrices with larger values.
+- Performing matrix multiplication, addition, subtraction, scalar multiplication, element-wise multiplication, and transposition.
+- Printing all matrices for verification.
+
+## 📁 Files
+
+- `matrix_interface.pyx`: Contains the Cython code for matrix operations.
+- `setup.py`: The setup script to build the Cython extension.
+- `matrix.cpp`: The C++ source file for matrix operations.
+- `matrix.h`: The header file for matrix operations.
+- `matrix_operations.ipynb`: Jupyter Notebook for interactive exploration of matrix operations.
+
+Follow the setup instructions to compile the shared library and the Cython code, and then run the Jupyter Notebook.
+
+## 👥 Authors
+
+- David Zaydenberg
+  - Email: [Davidzay@edu.hac.ac.il](mailto:Davidzay@edu.hac.ac.il)
+- Shahar Asher
+  - Email: [Shaharas@edu.hac.ac.il](mailto:Shaharas@edu.hac.ac.il)
