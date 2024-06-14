@@ -23,10 +23,20 @@ This project demonstrates how to perform matrix operations using Cython for impr
 
 ### Compile the shared library
 
+#### For Linux
+
 1. Compile the shared library from the C++ and header files:
 
     ```sh
     gcc -shared -o libmatrix.so -fPIC matrix.cpp
+    ```
+
+#### For Windows
+
+1. Compile the shared library from the C++ and header files:
+
+    ```sh
+    g++ -shared -o matrix.dll -fPIC matrix.cpp
     ```
 
 ### Compile the Cython extension
@@ -85,7 +95,6 @@ Follow the setup instructions to compile the shared library and the Cython code,
   - Email: [Davidzay@edu.hac.ac.il](mailto:Davidzay@edu.hac.ac.il)
 - Shahar Asher
   - Email: [Shaharas@edu.hac.ac.il](mailto:Shaharas@edu.hac.ac.il)
-
 
 ## 📜 License
 
