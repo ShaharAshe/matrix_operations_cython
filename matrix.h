@@ -12,6 +12,7 @@
 
 class MATRIX_API Matrix {
 public:
+    Matrix();
     Matrix(size_t rows, size_t cols);
     Matrix(const Matrix& other);
     Matrix(Matrix&& other) noexcept;
@@ -45,6 +46,7 @@ extern "C" {
     MATRIX_API size_t Matrix_cols(const Matrix* m);
     MATRIX_API void Matrix_fill(Matrix* m, double value);
     MATRIX_API Matrix* Matrix_multiply(const Matrix* a, const Matrix* b);
+    MATRIX_API Matrix* Matrix_transpose(const Matrix* m);
 }
 
 #endif // MATRIX_H
