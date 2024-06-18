@@ -4,6 +4,8 @@
 #include <thread>
 #include <vector>
 
+Matrix::Matrix() : rows_(0), cols_(0), data_() {}
+
 Matrix::Matrix(size_t rows, size_t cols) : rows_(rows), cols_(cols), data_(rows * cols, 0) {}
 
 Matrix::Matrix(const Matrix& other) : rows_(other.rows_), cols_(other.cols_), data_(other.data_) {}
@@ -68,6 +70,16 @@ Matrix Matrix::operator*(const Matrix& other) const {
     return result;
 }
 
+Matrix Matrix::transpose() const {
+    Matrix result(cols_, rows_);
+    for (size_t i = 0; i < rows_; ++i) {
+        for (size_t j = 0; j < cols_; ++j) {
+            result.set(j, i, get(i, j));
+        }
+    }
+    return result;
+}
+
 extern "C" {
     Matrix* Matrix_new(size_t rows, size_t cols) {
         return new Matrix(rows, cols);
@@ -99,5 +111,9 @@ extern "C" {
 
     Matrix* Matrix_multiply(const Matrix* a, const Matrix* b) {
         return new Matrix(*a * *b);
+    }
+
+    Matrix* Matrix_transpose(const Matrix* m) {
+        return new Matrix(m->transpose());
     }
 }
