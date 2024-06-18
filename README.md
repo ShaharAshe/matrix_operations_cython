@@ -68,22 +68,37 @@ The following matrix operations are implemented:
 
 ## Usage
 
-To see the matrix operations in action, run the `matrix_operations.ipynb` notebook. The notebook demonstrates how to create matrices and perform various operations interactively.
+To see the matrix operations in action, you can use either the Jupyter Notebook for interactive exploration or the standalone application.
 
-If the notebook doesn't work, you can also run the `main.py` file using the command line:
+### Jupyter Notebook
 
-```sh
-python3 main.py
-```
-
-### Example Operations in the Notebook
-
-The notebook includes examples of:
+The `matrix_operations.ipynb` notebook demonstrates how to create matrices and perform various operations interactively. It includes examples of:
 
 - Creating large matrices for heavy tasking.
 - Filling matrices with larger values.
 - Performing matrix multiplication, addition, subtraction, scalar multiplication, element-wise multiplication, and transposition.
 - Printing all matrices for verification.
+
+To run the notebook:
+
+```sh
+jupyter notebook matrix_operations.ipynb
+```
+
+### Standalone Application
+
+The standalone application provides a graphical interface for performing matrix operations. To run the application:
+
+```sh
+python3 main.py
+```
+
+The application allows you to:
+
+- Create matrices with specified rows and columns.
+- Fill matrices with specific values or random values.
+- Perform operations such as multiplication, addition, subtraction, scalar multiplication, element-wise multiplication, and transposition.
+- View and manage created matrices.
 
 ## 📁 Files
 
@@ -93,8 +108,9 @@ The notebook includes examples of:
 - `matrix.cpp`: The C++ source file for matrix operations.
 - `matrix.h`: The header file for matrix operations.
 - `matrix_operations.ipynb`: Jupyter Notebook for interactive exploration of matrix operations.
-
-Follow the setup instructions to compile the shared library and the Cython code, and then run the Jupyter Notebook.
+- `main.py`: Entry point for the standalone application.
+- `matrix_app.py`: Contains the `MatrixApp` class and the main application logic.
+- `matrix_operations.py`: Contains the logic for performing matrix operations.
 
 ## 👥 Authors
 
