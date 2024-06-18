@@ -1,4 +1,4 @@
-from matrix_interface import Matrix
+from matrix_interface import PyMatrix as Matrix
 
 def print_matrix(matrix, name):
     print(f"{name}:")
