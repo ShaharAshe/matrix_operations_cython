@@ -88,6 +88,7 @@ The notebook includes examples of:
 ## 📁 Files
 
 - `matrix_interface.pyx`: Contains the Cython code for matrix operations.
+- `matrix_interface.pxd`: Contains the corresponding declarations for the functions.
 - `setup.py`: The setup script to build the Cython extension.
 - `matrix.cpp`: The C++ source file for matrix operations.
 - `matrix.h`: The header file for matrix operations.
