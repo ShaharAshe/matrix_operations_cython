@@ -1,182 +1,87 @@
 from libc.stdlib cimport malloc, free
 cimport cython
+from matrix_interface cimport Matrix, Matrix_new, Matrix_delete, Matrix_get, Matrix_set, Matrix_rows, Matrix_cols, Matrix_fill, Matrix_multiply, Matrix_transpose
 
-cdef class Matrix:
-    """
-    A class that represents a matrix with basic operations such as addition, subtraction,
-    multiplication, scalar multiplication, element-wise multiplication, and transposition.
-    """
-    
-    cdef:
-        double* data  # Pointer to the matrix data stored in a contiguous block of memory
-        size_t rows, cols  # Number of rows and columns in the matrix
+cdef class PyMatrix:
+    cdef Matrix* c_matrix
 
-    def __cinit__(self, size_t rows, size_t cols):
-        """
-        Initialize the matrix with the given number of rows and columns.
-        Allocate memory for the matrix data.
-
-        :param rows: Number of rows in the matrix
-        :param cols: Number of columns in the matrix
-        """
-        self.rows = rows
-        self.cols = cols
-        self.data = <double*> malloc(self.rows * self.cols * sizeof(double))
-        if self.data == NULL:
-            raise MemoryError("Failed to allocate memory for matrix data")
+    def __cinit__(self, size_t rows=0, size_t cols=0):
+        if rows > 0 and cols > 0:
+            self.c_matrix = Matrix_new(rows, cols)
+        else:
+            self.c_matrix = NULL
 
     def __dealloc__(self):
-        """
-        Deallocate the memory used for the matrix data.
-        """
-        if self.data is not NULL:
-            free(self.data)
+        if self.c_matrix:
+            Matrix_delete(self.c_matrix)
 
     cpdef double get(self, size_t row, size_t col):
-        """
-        Get the value at the specified row and column in the matrix.
-
-        :param row: Row index
-        :param col: Column index
-        :return: Value at the specified position
-        """
-        if row >= self.rows or col >= self.cols:
-            raise IndexError("Matrix index out of range")
-        return self.data[row * self.cols + col]
+        return Matrix_get(self.c_matrix, row, col)
 
     cpdef void set(self, size_t row, size_t col, double value):
-        """
-        Set the value at the specified row and column in the matrix.
-
-        :param row: Row index
-        :param col: Column index
-        :param value: Value to set at the specified position
-        """
-        if row >= self.rows or col >= self.cols:
-            raise IndexError("Matrix index out of range")
-        self.data[row * self.cols + col] = value
+        Matrix_set(self.c_matrix, row, col, value)
 
     cpdef size_t get_rows(self):
-        """
-        Get the number of rows in the matrix.
-
-        :return: Number of rows
-        """
-        return self.rows
+        return Matrix_rows(self.c_matrix)
 
     cpdef size_t get_cols(self):
-        """
-        Get the number of columns in the matrix.
-
-        :return: Number of columns
-        """
-        return self.cols
+        return Matrix_cols(self.c_matrix)
 
     cpdef void fill(self, double value):
-        """
-        Fill the entire matrix with the specified value.
+        Matrix_fill(self.c_matrix, value)
 
-        :param value: Value to fill the matrix with
-        """
-        cdef size_t i
-        for i in range(self.rows * self.cols):
-            self.data[i] = value
-
-    cpdef Matrix multiply(self, Matrix other):
-        """
-        Perform matrix multiplication with another matrix.
-
-        :param other: The matrix to multiply with
-        :return: Resulting matrix after multiplication
-        :raises ValueError: If the dimensions of the matrices do not match for multiplication
-        """
-        if self.cols != other.get_rows():
-            raise ValueError("Matrix dimensions do not match for multiplication")
-        cdef Matrix result = Matrix(self.rows, other.get_cols())
-        cdef size_t i, j, k
-        cdef double sum
-        for i in range(self.rows):
-            for j in range(other.get_cols()):
-                sum = 0.0
-                for k in range(self.cols):
-                    sum += self.get(i, k) * other.get(k, j)
-                result.set(i, j, sum)
+    @staticmethod
+    cdef PyMatrix _create_from_matrix(Matrix* c_matrix):
+        cdef PyMatrix result = PyMatrix.__new__(PyMatrix)
+        result.c_matrix = c_matrix
         return result
 
-    cpdef Matrix add(self, Matrix other):
-        """
-        Perform matrix addition with another matrix.
+    cpdef PyMatrix multiply(self, PyMatrix other):
+        cdef Matrix* result_matrix = Matrix_multiply(self.c_matrix, other.c_matrix)
+        return PyMatrix._create_from_matrix(result_matrix)
 
-        :param other: The matrix to add
-        :return: Resulting matrix after addition
-        :raises ValueError: If the dimensions of the matrices do not match for addition
-        """
-        if self.rows != other.get_rows() or self.cols != other.get_cols():
+    cpdef PyMatrix add(self, PyMatrix other):
+        if self.get_rows() != other.get_rows() or self.get_cols() != other.get_cols():
             raise ValueError("Matrix dimensions do not match for addition")
-        cdef Matrix result = Matrix(self.rows, self.cols)
+        cdef Matrix* result_matrix = Matrix_new(self.get_rows(), self.get_cols())
+        cdef PyMatrix result = PyMatrix._create_from_matrix(result_matrix)
         cdef size_t i, j
-        for i in range(self.rows):
-            for j in range(self.cols):
+        for i in range(self.get_rows()):
+            for j in range(self.get_cols()):
                 result.set(i, j, self.get(i, j) + other.get(i, j))
         return result
 
-    cpdef Matrix subtract(self, Matrix other):
-        """
-        Perform matrix subtraction with another matrix.
-
-        :param other: The matrix to subtract
-        :return: Resulting matrix after subtraction
-        :raises ValueError: If the dimensions of the matrices do not match for subtraction
-        """
-        if self.rows != other.get_rows() or self.cols != other.get_cols():
+    cpdef PyMatrix subtract(self, PyMatrix other):
+        if self.get_rows() != other.get_rows() or self.get_cols() != other.get_cols():
             raise ValueError("Matrix dimensions do not match for subtraction")
-        cdef Matrix result = Matrix(self.rows, self.cols)
+        cdef Matrix* result_matrix = Matrix_new(self.get_rows(), self.get_cols())
+        cdef PyMatrix result = PyMatrix._create_from_matrix(result_matrix)
         cdef size_t i, j
-        for i in range(self.rows):
-            for j in range(self.cols):
+        for i in range(self.get_rows()):
+            for j in range(self.get_cols()):
                 result.set(i, j, self.get(i, j) - other.get(i, j))
         return result
 
-    cpdef Matrix scalar_multiply(self, double scalar):
-        """
-        Perform scalar multiplication on the matrix.
-
-        :param scalar: The scalar value to multiply each element by
-        :return: Resulting matrix after scalar multiplication
-        """
-        cdef Matrix result = Matrix(self.rows, self.cols)
+    cpdef PyMatrix scalar_multiply(self, double scalar):
+        cdef Matrix* result_matrix = Matrix_new(self.get_rows(), self.get_cols())
+        cdef PyMatrix result = PyMatrix._create_from_matrix(result_matrix)
         cdef size_t i, j
-        for i in range(self.rows):
-            for j in range(self.cols):
+        for i in range(self.get_rows()):
+            for j in range(self.get_cols()):
                 result.set(i, j, self.get(i, j) * scalar)
         return result
 
-    cpdef Matrix elementwise_multiply(self, Matrix other):
-        """
-        Perform element-wise multiplication with another matrix.
-
-        :param other: The matrix to element-wise multiply with
-        :return: Resulting matrix after element-wise multiplication
-        :raises ValueError: If the dimensions of the matrices do not match for element-wise multiplication
-        """
-        if self.rows != other.get_rows() or self.cols != other.get_cols():
+    cpdef PyMatrix elementwise_multiply(self, PyMatrix other):
+        if self.get_rows() != other.get_rows() or self.get_cols() != other.get_cols():
             raise ValueError("Matrix dimensions do not match for elementwise multiplication")
-        cdef Matrix result = Matrix(self.rows, self.cols)
+        cdef Matrix* result_matrix = Matrix_new(self.get_rows(), self.get_cols())
+        cdef PyMatrix result = PyMatrix._create_from_matrix(result_matrix)
         cdef size_t i, j
-        for i in range(self.rows):
-            for j in range(self.cols):
+        for i in range(self.get_rows()):
+            for j in range(self.get_cols()):
                 result.set(i, j, self.get(i, j) * other.get(i, j))
         return result
 
-    cpdef Matrix transpose(self):
-        """
-        Transpose the matrix.
-
-        :return: Transposed matrix
-        """
-        cdef Matrix result = Matrix(self.cols, self.rows)
-        cdef size_t i, j
-        for i in range(self.rows):
-            for j in range(self.cols):
-                result.set(j, i, self.get(i, j))
-        return result
+    cpdef PyMatrix transpose(self):
+        cdef Matrix* result_matrix = Matrix_transpose(self.c_matrix)
+        return PyMatrix._create_from_matrix(result_matrix)
